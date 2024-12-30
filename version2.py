@@ -10,21 +10,20 @@ import numpy as np
 def fetch_gas_prices(url):
     response = requests.get(url)
     soup = BeautifulSoup(response.content, 'html.parser')
+
     data = []
-    table = soup.find('table')  
-if table is None:  
-    print("Table not found in the HTML.")  
-    return pd.DataFrame()  
+    table = soup.find('table')  # Locate the table containing price data
+    if table is None:  # Handle case where table is missing
+        return pd.DataFrame()  # Ensure the return is inside the function
 
-
-    for row in table.find_all('tr')[1:]:  # Skip header
+    for row in table.find_all('tr')[1:]:  # Skip header row
         cols = row.find_all('td')
         try:
             date = cols[0].text.strip()
             price = float(cols[1].text.strip().replace('$', ''))
             data.append({'date': date, 'price': price})
         except (IndexError, ValueError):
-            continue  # Skip rows with missing or invalid data
+            continue  # Skip rows with invalid data
 
     return pd.DataFrame(data)
 
