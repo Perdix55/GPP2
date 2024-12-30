@@ -11,9 +11,11 @@ def fetch_gas_prices(url):
     response = requests.get(url)
     soup = BeautifulSoup(response.content, 'html.parser')
     data = []
-    table = soup.find('table')  # Locate the table containing price data
-    if not table:
-        return pd.DataFrame()  # Return empty DataFrame if no table found
+    table = soup.find('table')  
+if table is None:  
+    print("Table not found in the HTML.")  
+    return pd.DataFrame()  
+
 
     for row in table.find_all('tr')[1:]:  # Skip header
         cols = row.find_all('td')
